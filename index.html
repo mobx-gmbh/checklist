@@ -89,7 +89,8 @@
 
 <script>
 const STATES = ['', '\u2705', '\u274C'];
-let data = JSON.parse(localStorage.getItem('checklist') || '{}');
+const API = 'https://s6o2vypvkdkmtbws4cc6lvacdq0ajkvo.lambda-url.eu-central-1.on.aws/';
+let data = {};
 let view = 'month';
 let currentDate = new Date();
 let editMode = false;
@@ -100,7 +101,13 @@ const isToday = d => key(d) === key(new Date());
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-function save() { localStorage.setItem('checklist', JSON.stringify(data)); }
+async function load() {
+  try { data = await fetch(API).then(r => r.json()); } catch(e) { console.error('Load failed', e); }
+  render();
+}
+async function save() {
+  try { await fetch(API, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); } catch(e) { console.error('Save failed', e); }
+}
 function stCls(st) { return st === '\u2705' ? ' state-check' : st === '\u274C' ? ' state-cross' : ''; }
 
 function cycleState(dateKey) {
@@ -234,7 +241,7 @@ $('editBtn').addEventListener('click', () => {
   $('editBtn').classList.toggle('active', editMode);
 });
 
-render();
+load();
 </script>
 </body>
 </html>
