@@ -1,74 +1,81 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>المتابعة اليومية</title>
+<title>Checklist</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans Arabic', sans-serif; background: #f5f5f5; color: #333; min-height: 100dvh; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; min-height: 100dvh; }
 
-  /* Cover Screen */
+  /* Cover */
   #cover {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     min-height: 100dvh; gap: 16px; padding: 20px;
   }
-  #cover h1 { font-size: 24px; margin-bottom: 20px; color: #555; }
+  #cover h1 { font-size: 22px; margin-bottom: 20px; color: #555; }
   .profile-btn {
     width: 200px; padding: 18px; border: none; border-radius: 12px;
-    font-size: 20px; font-weight: 600; cursor: pointer; transition: transform 0.1s, box-shadow 0.15s;
+    font-size: 20px; font-weight: 600; cursor: pointer;
     background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #333;
   }
   .profile-btn:active { transform: scale(0.97); }
 
-  /* App Shell */
-  #app { display: none !important; }
-  #app.visible { display: block !important; }
+  /* App */
+  #app { display: none; }
+  #app.visible { display: block; }
 
-  header {
+  /* Header */
+  .top-bar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 12px 16px; background: #fff; border-bottom: 1px solid #e0e0e0;
   }
-  header h1 { font-size: 17px; font-weight: 600; flex: 1; text-align: center; }
+  .top-bar h1 { font-size: 17px; font-weight: 600; flex: 1; text-align: center; }
   .nav-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 10px; color: #555; }
-  #profileName {
-    position: absolute; top: 12px; left: 16px; font-size: 12px; color: #999;
-    cursor: pointer; z-index: 10; background: #f0f0f0; padding: 3px 8px; border-radius: 10px;
+  .back-btn { background: none; border: none; font-size: 14px; cursor: pointer; color: #1a73e8; padding: 4px 8px; }
+  #profileBar {
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px; background: #fff; border-bottom: 1px solid #e0e0e0;
   }
+  #profileBar button {
+    background: #f0f0f0; border: none; padding: 4px 14px; border-radius: 12px;
+    font-size: 13px; color: #666; cursor: pointer;
+  }
+  #profileBar button:active { background: #e0e0e0; }
 
+  /* View Toggle */
   .view-toggle {
-    display: flex; justify-content: center; gap: 0; padding: 10px 20px; background: #fff;
+    display: flex; justify-content: center; padding: 10px 20px; background: #fff;
     border-bottom: 1px solid #e0e0e0;
   }
   .view-toggle button {
     flex: 1; max-width: 120px; padding: 7px 0; border: 1px solid #ddd; background: #f9f9f9;
-    font-size: 13px; cursor: pointer; color: #555; transition: all 0.15s;
+    font-size: 13px; cursor: pointer; color: #555;
   }
-  .view-toggle button:first-child { border-radius: 0 6px 6px 0; }
-  .view-toggle button:last-child { border-radius: 6px 0 0 6px; border-right: none; }
+  .view-toggle button:first-child { border-radius: 6px 0 0 6px; }
+  .view-toggle button:last-child { border-radius: 0 6px 6px 0; border-left: none; }
   .view-toggle button.active { background: #333; color: #fff; border-color: #333; }
 
-  /* Month View */
+  /* Month */
   #monthView { padding: 8px; }
   .weekday-headers { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; padding: 6px 0; }
   .weekday-headers span { font-size: 11px; color: #999; font-weight: 500; }
   .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
   .month-day {
     aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    font-size: 13px; border-radius: 8px; cursor: pointer; position: relative; gap: 2px;
-    transition: background 0.15s;
+    font-size: 13px; border-radius: 8px; cursor: pointer; gap: 1px;
   }
   .month-day:active { background: #e8e8e8; }
   .month-day.other-month { color: #ccc; }
   .month-day.other-month svg circle:last-child { opacity: 0.4; }
   .month-day.today .day-num { font-weight: 700; color: #1a73e8; }
 
-  /* Week View */
+  /* Week */
   #weekView { padding: 12px; }
   .week-day {
     display: flex; align-items: center; padding: 14px; margin-bottom: 6px;
     background: #fff; border-radius: 10px; cursor: pointer;
-    transition: background 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.04); gap: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04); gap: 12px;
   }
   .week-day:active { background: #f0f0f0; }
   .week-day .day-info { flex: 1; }
@@ -77,25 +84,24 @@
   .week-day .day-date.today { color: #1a73e8; font-weight: 700; }
   .week-day .progress-wrap { display: flex; align-items: center; gap: 8px; }
   .week-day .progress-bar { width: 60px; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
-  .week-day .progress-fill { height: 100%; border-radius: 3px; transition: width 0.2s; }
-  .week-day .progress-label { font-size: 12px; color: #999; min-width: 28px; text-align: center; direction: ltr; }
+  .week-day .progress-fill { height: 100%; border-radius: 3px; }
+  .week-day .progress-label { font-size: 12px; color: #999; min-width: 28px; text-align: center; }
 
-  /* Day View */
-  #dayView { display: none; padding: 16px; }
-  .day-header { text-align: center; padding: 8px 0 16px; font-size: 16px; color: #555; }
+  /* Day */
+  #dayView { padding: 16px; }
   .item-row {
     display: flex; align-items: center; padding: 14px 16px; margin-bottom: 6px;
     background: #fff; border-radius: 10px; cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: background 0.15s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   }
   .item-row:active { background: #f0f0f0; }
-  .item-row .item-label { flex: 1; font-size: 16px; }
+  .item-row .item-label { flex: 1; font-size: 16px; direction: rtl; text-align: right; }
   .item-row .item-check {
     width: 28px; height: 28px; border-radius: 6px; display: flex;
     align-items: center; justify-content: center; font-size: 18px;
-    border: 2px solid #ddd; transition: all 0.15s;
+    border: 2px solid #ddd; margin-left: 12px; flex-shrink: 0;
   }
-  .item-row .item-check.checked { background: #d4edda; border-color: #66BB6A; }
+  .item-row .item-check.checked { background: #d4edda; border-color: #66BB6A; color: #66BB6A; }
   .day-summary {
     display: flex; align-items: center; justify-content: center;
     gap: 12px; padding: 20px; margin-top: 10px; color: #777; font-size: 15px;
@@ -111,19 +117,28 @@
 </div>
 
 <div id="app">
-  <span id="profileName"></span>
-  <header>
-    <button class="nav-btn" id="nextBtn">&#8250;</button>
-    <h1 id="headerTitle"></h1>
+  <div id="profileBar"><button id="profileSwitch"></button></div>
+
+  <div class="top-bar" id="navBar">
     <button class="nav-btn" id="prevBtn">&#8249;</button>
-  </header>
-  <div class="view-toggle">
-    <button id="monthToggle" class="active">شهري</button>
-    <button id="weekToggle">أسبوعي</button>
+    <h1 id="headerTitle"></h1>
+    <button class="nav-btn" id="nextBtn">&#8250;</button>
   </div>
+
+  <div class="top-bar" id="dayBar" style="display:none">
+    <button class="back-btn" id="backBtn">&#8592; Back</button>
+    <h1 id="dayTitle"></h1>
+    <div style="width:50px"></div>
+  </div>
+
+  <div class="view-toggle" id="viewToggle">
+    <button id="monthToggle" class="active">Month</button>
+    <button id="weekToggle">Week</button>
+  </div>
+
   <div id="monthView"></div>
   <div id="weekView" style="display:none"></div>
-  <div id="dayView"></div>
+  <div id="dayView" style="display:none"></div>
 </div>
 
 <script>
@@ -138,9 +153,12 @@ const ITEMS = [
   { id: 'quran', label: 'قراءة القرآن' },
   { id: 'kahf', label: 'سورة الكهف' },
 ];
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 let data = {};
-let view = 'month';
+let view = 'month'; // 'month' | 'week' | 'day'
+let previousView = 'week';
 let currentDate = new Date();
 let currentProfile = null;
 let selectedDay = null;
@@ -149,8 +167,6 @@ const $ = id => document.getElementById(id);
 const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const isToday = d => dateKey(d) === dateKey(new Date());
 const isFriday = d => d.getDay() === 5;
-const DAYS_AR = ['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
-const MONTHS_AR = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 
 function itemsForDate(d) {
   return isFriday(d) ? ITEMS : ITEMS.filter(i => i.id !== 'kahf');
@@ -172,7 +188,7 @@ function progressColor(done, total) {
   return '#66BB6A';
 }
 
-function progressRing(done, total, size = 18) {
+function progressRing(done, total, size) {
   const r = size / 2 - 2, c = 2 * Math.PI * r;
   const pct = total === 0 ? 0 : done / total;
   const color = progressColor(done, total);
@@ -196,14 +212,17 @@ async function save() {
 function selectProfile(p) {
   currentProfile = p;
   localStorage.setItem('checklist-profile', p);
-  $('profileName').textContent = PROFILES[p];
+  $('profileSwitch').textContent = PROFILES[p] + ' ▾';
   $('cover').style.display = 'none';
   $('app').classList.add('visible');
+  view = 'month';
+  currentDate = new Date();
   load();
 }
 
 function switchProfile() {
   currentProfile = null;
+  data = {};
   localStorage.removeItem('checklist-profile');
   $('app').classList.remove('visible');
   $('cover').style.display = '';
@@ -212,35 +231,41 @@ function switchProfile() {
 document.querySelectorAll('.profile-btn').forEach(btn => {
   btn.addEventListener('click', () => selectProfile(btn.dataset.profile));
 });
-$('profileName').addEventListener('click', switchProfile);
+$('profileSwitch').addEventListener('click', switchProfile);
 
-// --- Navigation ---
+// --- View Management ---
 function getWeekStart(d) {
   const dt = new Date(d);
   dt.setDate(dt.getDate() - dt.getDay());
   return dt;
 }
 
-function setView(v) {
+function showView(v) {
+  if (view !== 'day' && v !== 'day') previousView = view;
   view = v;
-  $('monthToggle').classList.toggle('active', v === 'month');
-  $('weekToggle').classList.toggle('active', v === 'week');
+
   $('monthView').style.display = v === 'month' ? '' : 'none';
   $('weekView').style.display = v === 'week' ? '' : 'none';
-  $('dayView').style.display = 'none';
-  $('headerTitle').style.display = '';
-  document.querySelector('.view-toggle').style.display = '';
+  $('dayView').style.display = v === 'day' ? '' : 'none';
+
+  $('navBar').style.display = v === 'day' ? 'none' : '';
+  $('dayBar').style.display = v === 'day' ? '' : 'none';
+  $('viewToggle').style.display = v === 'day' ? 'none' : '';
+
+  $('monthToggle').classList.toggle('active', v === 'month');
+  $('weekToggle').classList.toggle('active', v === 'week');
+
   render();
 }
 
 function openDay(d) {
+  previousView = view;
   selectedDay = new Date(d);
-  view = 'day';
-  $('monthView').style.display = 'none';
-  $('weekView').style.display = 'none';
-  $('dayView').style.display = '';
-  document.querySelector('.view-toggle').style.display = 'none';
-  renderDay();
+  showView('day');
+}
+
+function goBack() {
+  showView(previousView);
 }
 
 function render() {
@@ -252,26 +277,26 @@ function render() {
 // --- Month View ---
 function renderMonth() {
   const year = currentDate.getFullYear(), month = currentDate.getMonth();
-  $('headerTitle').textContent = `${MONTHS_AR[month]} ${year}`;
+  $('headerTitle').textContent = `${MONTHS[month]} ${year}`;
 
   const first = new Date(year, month, 1);
   const last = new Date(year, month + 1, 0);
   const startDay = first.getDay();
 
-  let html = '<div class="weekday-headers">' + DAYS_AR.map(d => `<span>${d}</span>`).join('') + '</div><div class="month-grid">';
+  let html = '<div class="weekday-headers">' + DAYS.map(d => `<span>${d}</span>`).join('') + '</div><div class="month-grid">';
 
-  function monthDayHtml(d, extraCls) {
+  function addDay(d, extraCls) {
     const { done, total } = progressForDate(d);
     const todayCls = isToday(d) ? ' today' : '';
     html += `<div class="month-day${todayCls}${extraCls}" data-week="${getWeekStart(d).toISOString()}">
-      <span class="day-num">${d.getDate()}</span>${progressRing(done, total)}
+      <span class="day-num">${d.getDate()}</span>${progressRing(done, total, 18)}
     </div>`;
   }
 
-  for (let i = 0; i < startDay; i++) monthDayHtml(new Date(year, month, -(startDay - 1 - i)), ' other-month');
-  for (let i = 1; i <= last.getDate(); i++) monthDayHtml(new Date(year, month, i), '');
+  for (let i = 0; i < startDay; i++) addDay(new Date(year, month, -(startDay - 1 - i)), ' other-month');
+  for (let i = 1; i <= last.getDate(); i++) addDay(new Date(year, month, i), '');
   const remaining = (7 - ((startDay + last.getDate()) % 7)) % 7;
-  for (let i = 1; i <= remaining; i++) monthDayHtml(new Date(year, month + 1, i), ' other-month');
+  for (let i = 1; i <= remaining; i++) addDay(new Date(year, month + 1, i), ' other-month');
 
   html += '</div>';
   $('monthView').innerHTML = html;
@@ -279,7 +304,7 @@ function renderMonth() {
   $('monthView').querySelectorAll('.month-day').forEach(el => {
     el.addEventListener('click', () => {
       currentDate = new Date(el.dataset.week);
-      setView('week');
+      showView('week');
     });
   });
 }
@@ -290,7 +315,7 @@ function renderWeek() {
   const we = new Date(ws);
   we.setDate(we.getDate() + 6);
 
-  $('headerTitle').textContent = `${ws.getDate()} ${MONTHS_AR[ws.getMonth()]} – ${we.getDate()} ${MONTHS_AR[we.getMonth()]}`;
+  $('headerTitle').textContent = `${MONTHS[ws.getMonth()]} ${ws.getDate()} – ${MONTHS[we.getMonth()]} ${we.getDate()}`;
 
   let html = '';
   for (let i = 0; i < 7; i++) {
@@ -303,8 +328,8 @@ function renderWeek() {
 
     html += `<div class="week-day" data-date="${d.toISOString()}">
       <div class="day-info">
-        <div class="day-name">${DAYS_AR[d.getDay()]}</div>
-        <div class="day-date${todayCls}">${d.getDate()} ${MONTHS_AR[d.getMonth()]}</div>
+        <div class="day-name">${DAYS[d.getDay()]}</div>
+        <div class="day-date${todayCls}">${MONTHS[d.getMonth()]} ${d.getDate()}</div>
       </div>
       <div class="progress-wrap">
         <span class="progress-label">${done}/${total}</span>
@@ -329,18 +354,18 @@ function renderDay() {
   const dayData = data[k] || {};
   const { done, total } = progressForDate(d);
 
-  $('headerTitle').textContent = `${DAYS_AR[d.getDay()]} ${d.getDate()} ${MONTHS_AR[d.getMonth()]}`;
+  $('dayTitle').textContent = `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`;
 
   let html = '';
   items.forEach(item => {
     const checked = dayData[item.id] ? ' checked' : '';
     html += `<div class="item-row" data-item="${item.id}">
-      <div class="item-label">${item.label}</div>
       <div class="item-check${checked}">${dayData[item.id] ? '✓' : ''}</div>
+      <div class="item-label">${item.label}</div>
     </div>`;
   });
 
-  html += `<div class="day-summary">${progressRing(done, total, 36)} <span>${done} من ${total}</span></div>`;
+  html += `<div class="day-summary">${progressRing(done, total, 36)} <span>${done} / ${total}</span></div>`;
 
   $('dayView').innerHTML = html;
 
@@ -349,26 +374,29 @@ function renderDay() {
       const itemId = el.dataset.item;
       if (!data[k]) data[k] = {};
       data[k][itemId] = !data[k][itemId];
+      if (!data[k][itemId]) delete data[k][itemId];
+      if (Object.keys(data[k]).length === 0) delete data[k];
       save();
       renderDay();
     });
   });
 }
 
-// --- Header Navigation ---
+// --- Navigation ---
 $('prevBtn').addEventListener('click', () => {
-  if (view === 'month') { currentDate.setMonth(currentDate.getMonth() - 1); render(); }
-  else if (view === 'week') { currentDate.setDate(currentDate.getDate() - 7); render(); }
-  else if (view === 'day') { selectedDay.setDate(selectedDay.getDate() - 1); renderDay(); }
+  if (view === 'month') currentDate.setMonth(currentDate.getMonth() - 1);
+  else if (view === 'week') currentDate.setDate(currentDate.getDate() - 7);
+  render();
 });
 $('nextBtn').addEventListener('click', () => {
-  if (view === 'month') { currentDate.setMonth(currentDate.getMonth() + 1); render(); }
-  else if (view === 'week') { currentDate.setDate(currentDate.getDate() + 7); render(); }
-  else if (view === 'day') { selectedDay.setDate(selectedDay.getDate() + 1); renderDay(); }
+  if (view === 'month') currentDate.setMonth(currentDate.getMonth() + 1);
+  else if (view === 'week') currentDate.setDate(currentDate.getDate() + 7);
+  render();
 });
 
-$('monthToggle').addEventListener('click', () => setView('month'));
-$('weekToggle').addEventListener('click', () => setView('week'));
+$('monthToggle').addEventListener('click', () => showView('month'));
+$('weekToggle').addEventListener('click', () => showView('week'));
+$('backBtn').addEventListener('click', goBack);
 
 // --- Init ---
 const saved = localStorage.getItem('checklist-profile');
