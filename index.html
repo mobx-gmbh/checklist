@@ -152,6 +152,7 @@ const ITEMS = [
   { id: 'duha', label: 'الضحى' },
   { id: 'quran', label: 'قراءة القرآن' },
   { id: 'kahf', label: 'سورة الكهف' },
+  { id: 'wafaa', label: 'وفاء بالوعد', profile: 'jihad' },
 ];
 const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -169,7 +170,12 @@ const isToday = d => dateKey(d) === dateKey(new Date());
 const isFriday = d => d.getDay() === 5;
 
 function itemsForDate(d) {
-  return isFriday(d) ? ITEMS : ITEMS.filter(i => i.id !== 'kahf');
+  let items = ITEMS.filter(i => {
+    if (i.id === 'kahf' && !isFriday(d)) return false;
+    if (i.profile && i.profile !== currentProfile) return false;
+    return true;
+  });
+  return items;
 }
 
 function progressForDate(d) {
