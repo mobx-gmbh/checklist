@@ -22,7 +22,8 @@
   .profile-btn:active { transform: scale(0.97); }
 
   /* App Shell */
-  #app { display: none; }
+  #app { display: none !important; }
+  #app.visible { display: block !important; }
 
   header {
     display: flex; align-items: center; justify-content: space-between;
@@ -197,14 +198,14 @@ function selectProfile(p) {
   localStorage.setItem('checklist-profile', p);
   $('profileName').textContent = PROFILES[p];
   $('cover').style.display = 'none';
-  $('app').style.display = '';
+  $('app').classList.add('visible');
   load();
 }
 
 function switchProfile() {
   currentProfile = null;
   localStorage.removeItem('checklist-profile');
-  $('app').style.display = 'none';
+  $('app').classList.remove('visible');
   $('cover').style.display = '';
 }
 
