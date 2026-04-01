@@ -155,11 +155,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Swipe hint */
-  .swipe-hint {
-    text-align: center; font-size: 11px; color: var(--text3); padding: 4px; margin-top: 4px;
-    opacity: 0.6;
-  }
 </style>
 </head>
 <body>
@@ -491,7 +486,6 @@ function renderDay() {
     <button id="prevDay">&#8249; Previous day</button>
     <button id="nextDay">Next day &#8250;</button>
   </div>`;
-  html += `<div class="swipe-hint">Swipe left/right to change day</div>`;
 
   $('dayView').innerHTML = html;
 
