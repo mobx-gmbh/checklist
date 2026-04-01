@@ -341,7 +341,7 @@ function applyDark() {
   document.documentElement.classList.remove('auto-dark', 'force-dark');
   if (darkMode === 'auto') document.documentElement.classList.add('auto-dark');
   else if (darkMode === 'on') document.documentElement.classList.add('force-dark');
-  $('darkToggle').textContent = darkMode === 'on' ? '☀️' : darkMode === 'off' ? '🌙' : '🌗';
+  $('darkToggle').textContent = darkMode === 'on' ? '🌙' : darkMode === 'off' ? '☀️' : '🌗';
 }
 $('darkToggle').addEventListener('click', () => {
   darkMode = darkMode === 'auto' ? 'on' : darkMode === 'on' ? 'off' : 'auto';
