@@ -93,7 +93,8 @@
   .month-day:active { background: var(--hover); }
   .month-day.other-month { color: var(--text3); opacity: 0.5; }
   .month-day.today .day-num { font-weight: 700; color: var(--accent); }
-  .month-day .wafaa-check { font-size: 8px; color: #66BB6A; line-height: 1; position: absolute; bottom: 2px; right: 2px; font-weight: 700; }
+  .month-day .ring-wrap { position: relative; display: inline-flex; }
+  .month-day .wafaa-check { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #66BB6A; font-weight: 700; line-height: 1; }
   .month-day .long-press-hint {
     position: absolute; inset: 0; border-radius: 8px;
     background: rgba(102, 187, 106, 0.15); pointer-events: none; opacity: 0;
@@ -441,7 +442,8 @@ function renderMonth() {
     const k = dateKey(d);
     const dayData = data[k] || {};
     const showWafaa = currentProfile === 'jihad' && dayData['wafaa'];
-    const indicator = progressRing(done, total, 18) + (showWafaa ? '<span class="wafaa-check">✓</span>' : '');
+    const wafaaMark = showWafaa ? '<span class="wafaa-check">✓</span>' : '';
+    const indicator = `<span class="ring-wrap">${progressRing(done, total, 18)}${wafaaMark}</span>`;
     const lpHint = currentProfile === 'jihad' ? '<div class="long-press-hint"></div>' : '';
     html += `<div class="month-day${todayCls}${extraCls}" data-date="${d.toISOString()}" data-key="${k}">
       ${lpHint}<span class="day-num">${d.getDate()}</span>${indicator}
