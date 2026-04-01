@@ -70,15 +70,6 @@
   }
   .dark-toggle:active { background: var(--hover); }
 
-  /* Stats banner */
-  .stats-banner {
-    display: flex; justify-content: center; gap: 20px;
-    padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border);
-    font-size: 12px; color: var(--text3);
-  }
-  .stats-banner .stat { display: flex; align-items: center; gap: 4px; }
-  .stats-banner .stat-val { font-weight: 700; font-size: 13px; color: var(--text2); }
-  .streak-fire { color: #FFA726; }
 
   /* Month */
   #monthView { padding: 8px; }
@@ -197,7 +188,6 @@
     <div style="width:50px"></div>
   </div>
 
-  <div id="statsBanner" class="stats-banner" style="display:none"></div>
 
   <div class="view-container">
     <div id="monthView"></div>
@@ -270,50 +260,6 @@ function progressRing(done, total, size) {
     <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="2"
       stroke-dasharray="${c * pct} ${c}" transform="rotate(-90 ${size/2} ${size/2})" stroke-linecap="round"/>
   </svg>`;
-}
-
-// --- Streak ---
-function calcStreak() {
-  let streak = 0;
-  const d = new Date();
-  // Check today first — if not complete, start from yesterday
-  let { done, total } = progressForDate(d);
-  if (done < total) d.setDate(d.getDate() - 1);
-  while (true) {
-    const { done, total } = progressForDate(d);
-    if (total === 0 || done < total) break;
-    streak++;
-    d.setDate(d.getDate() - 1);
-  }
-  return streak;
-}
-
-function calcWeekStats() {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  let completeDays = 0, totalDays = 0;
-  for (let i = 0; i <= dayOfWeek; i++) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - (dayOfWeek - i));
-    const { done, total } = progressForDate(d);
-    if (total > 0) {
-      totalDays++;
-      if (done === total) completeDays++;
-    }
-  }
-  return { completeDays, totalDays };
-}
-
-function renderStats() {
-  const streak = calcStreak();
-  const week = calcWeekStats();
-  const banner = $('statsBanner');
-  banner.style.display = view === 'month' ? '' : 'none';
-  if (view !== 'month') return;
-  banner.innerHTML = `
-    <div class="stat"><span class="streak-fire">🔥</span> <span class="stat-val">${streak}</span> day streak</div>
-    <div class="stat">This week: <span class="stat-val">${week.completeDays}/${week.totalDays}</span></div>
-  `;
 }
 
 // --- API ---
@@ -391,7 +337,6 @@ function showView(v, direction) {
     // Render the incoming view first
     if (v === 'month') renderMonth();
     else renderDay();
-    renderStats();
 
     inEl.style.display = '';
     inEl.classList.add(direction === 'left' ? 'slide-in-right' : 'slide-in-left');
@@ -494,8 +439,7 @@ function renderMonth() {
         if (Object.keys(data[k]).length === 0) delete data[k];
         save();
         renderMonth();
-        renderStats();
-      }, 500);
+          }, 500);
       el.classList.add('lp-active');
     }
     function cancelLP() {
