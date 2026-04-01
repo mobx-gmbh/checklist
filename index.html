@@ -100,8 +100,12 @@
   }
 
   /* Slide transitions */
-  .view-container { position: relative; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
-  #monthView, #dayView {
+  .view-container { position: relative; overflow: hidden; flex: 1; }
+  .view-container.animating #monthView,
+  .view-container.animating #dayView {
+    position: absolute; top: 0; left: 0; width: 100%;
+  }
+  .animating #monthView, .animating #dayView {
     transition: transform 0.25s ease, opacity 0.25s ease;
   }
   .slide-out-left { transform: translateX(-100%); opacity: 0; }
@@ -324,6 +328,8 @@ function showView(v, direction) {
   $('navBar').style.display = v === 'day' ? 'none' : '';
   $('dayBar').style.display = v === 'day' ? '' : 'none';
 
+  const container = document.querySelector('.view-container');
+
   if (direction && oldView !== v) {
     transitioning = true;
     const outEl = oldView === 'month' ? monthEl : dayEl;
@@ -333,6 +339,7 @@ function showView(v, direction) {
     if (v === 'month') renderMonth();
     else renderDay();
 
+    container.classList.add('animating');
     inEl.style.display = '';
     inEl.classList.add(direction === 'left' ? 'slide-in-right' : 'slide-in-left');
 
@@ -344,6 +351,7 @@ function showView(v, direction) {
         setTimeout(() => {
           outEl.style.display = 'none';
           outEl.classList.remove('slide-out-left', 'slide-out-right');
+          container.classList.remove('animating');
           transitioning = false;
         }, 260);
       });
