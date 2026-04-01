@@ -134,7 +134,7 @@
     border: 2px solid #ddd; margin-left: 12px; flex-shrink: 0;
     transition: all 0.2s ease;
   }
-  .item-row .item-check.checked { background: var(--check-bg); border-color: var(--check-border); color: var(--check-border); }
+  .item-row .item-check.checked { background: var(--check-bg); border-color: var(--check-border); color: #fff; font-weight: 700; }
   .day-summary {
     display: flex; align-items: center; justify-content: center;
     gap: 12px; padding: 20px; margin-top: 10px; color: var(--text3); font-size: 15px;
@@ -520,7 +520,9 @@ function renderDay() {
     </div>`;
   });
 
-  html += `<div class="day-summary">${progressRing(done, total, 36)} <span>${done} / ${total}</span></div>`;
+  const wafaaDone = currentProfile === 'jihad' && dayData['wafaa'];
+  const summaryRing = `<span class="ring-wrap">${progressRing(done, total, 36)}${wafaaDone ? '<span class="wafaa-check" style="font-size:14px">✓</span>' : ''}</span>`;
+  html += `<div class="day-summary">${summaryRing} <span>${done} / ${total}</span></div>`;
 
   // Day navigation buttons
   html += `<div class="day-nav">
