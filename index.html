@@ -552,12 +552,43 @@ function renderDay() {
   document.getElementById('nextDay').addEventListener('click', () => navigateDay(1));
 }
 
+let dayTransitioning = false;
 function navigateDay(offset) {
+  if (dayTransitioning) return;
+  dayTransitioning = true;
   haptic();
-  const d = new Date(selectedDay);
-  d.setDate(d.getDate() + offset);
-  selectedDay = d;
-  renderDay();
+
+  const dayEl = $('dayView');
+  const outDir = offset > 0 ? '-100%' : '100%';
+  const inDir = offset > 0 ? '100%' : '-100%';
+
+  dayEl.style.transition = 'transform 0.18s ease-out, opacity 0.18s ease-out';
+  dayEl.style.transform = `translateX(${outDir})`;
+  dayEl.style.opacity = '0';
+
+  setTimeout(() => {
+    const d = new Date(selectedDay);
+    d.setDate(d.getDate() + offset);
+    selectedDay = d;
+    renderDay();
+
+    dayEl.style.transition = 'none';
+    dayEl.style.transform = `translateX(${inDir})`;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        dayEl.style.transition = 'transform 0.18s ease-out, opacity 0.18s ease-out';
+        dayEl.style.transform = 'translateX(0)';
+        dayEl.style.opacity = '1';
+        setTimeout(() => {
+          dayEl.style.transition = '';
+          dayEl.style.transform = '';
+          dayEl.style.opacity = '';
+          dayTransitioning = false;
+        }, 200);
+      });
+    });
+  }, 180);
 }
 
 // --- Swipe on Day View ---
