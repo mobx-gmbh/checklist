@@ -150,6 +150,21 @@
   }
   .day-nav button:active { background: var(--hover); }
 
+  /* Loading overlay */
+  #loadingOverlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.45); backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none; transition: opacity 0.15s;
+  }
+  #loadingOverlay.active { opacity: 1; pointer-events: all; }
+  .spinner {
+    width: 44px; height: 44px; border: 4px solid rgba(255,255,255,0.2);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   /* Swipe hint */
   .swipe-hint {
     text-align: center; font-size: 11px; color: var(--text3); padding: 4px; margin-top: 4px;
@@ -165,6 +180,7 @@
   <button class="profile-btn" data-profile="jihad">جهاد</button>
 </div>
 
+<div id="loadingOverlay"><div class="spinner"></div></div>
 <div id="app">
   <div id="profileBar">
     <button id="profileSwitch"></button>
@@ -303,7 +319,9 @@ function renderStats() {
 
 // --- API ---
 async function load() {
+  $('loadingOverlay').classList.add('active');
   try { data = await fetch(API + currentProfile).then(r => r.json()); } catch(e) { console.error('Load failed', e); }
+  $('loadingOverlay').classList.remove('active');
   render();
 }
 async function save() {
