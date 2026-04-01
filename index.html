@@ -3,21 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light dark">
 <title>Checklist</title>
 <style>
+  :root {
+    --bg: #f5f5f5; --card: #fff; --text: #333; --text2: #555; --text3: #999;
+    --border: #e0e0e0; --hover: #e8e8e8; --ring-bg: #eee; --bar-bg: #f0f0f0;
+    --check-bg: #d4edda; --check-border: #66BB6A; --accent: #1a73e8;
+    --shadow: rgba(0,0,0,0.04); --shadow2: rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root.auto-dark {
+      --bg: #1a1a1a; --card: #2a2a2a; --text: #e0e0e0; --text2: #bbb; --text3: #777;
+      --border: #3a3a3a; --hover: #3a3a3a; --ring-bg: #3a3a3a; --bar-bg: #333;
+      --check-bg: #1a3a1a; --check-border: #66BB6A; --accent: #5b9cf5;
+      --shadow: rgba(0,0,0,0.2); --shadow2: rgba(0,0,0,0.3);
+    }
+  }
+  :root.force-dark {
+    --bg: #1a1a1a; --card: #2a2a2a; --text: #e0e0e0; --text2: #bbb; --text3: #777;
+    --border: #3a3a3a; --hover: #3a3a3a; --ring-bg: #3a3a3a; --bar-bg: #333;
+    --check-bg: #1a3a1a; --check-border: #66BB6A; --accent: #5b9cf5;
+    --shadow: rgba(0,0,0,0.2); --shadow2: rgba(0,0,0,0.3);
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; min-height: 100dvh; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100dvh; }
 
   /* Cover */
   #cover {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     min-height: 100dvh; gap: 16px; padding: 20px;
   }
-  #cover h1 { font-size: 22px; margin-bottom: 20px; color: #555; }
+  #cover h1 { font-size: 22px; margin-bottom: 20px; color: var(--text2); }
   .profile-btn {
     width: 200px; padding: 18px; border: none; border-radius: 12px;
     font-size: 20px; font-weight: 600; cursor: pointer;
-    background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #333;
+    background: var(--card); box-shadow: 0 2px 8px var(--shadow2); color: var(--text);
   }
   .profile-btn:active { transform: scale(0.97); }
 
@@ -28,83 +50,108 @@
   /* Header */
   .top-bar {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px; background: #fff; border-bottom: 1px solid #e0e0e0;
+    padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border);
   }
-  .top-bar h1 { font-size: 17px; font-weight: 600; flex: 1; text-align: center; }
-  .nav-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 10px; color: #555; }
-  .back-btn { background: none; border: none; font-size: 14px; cursor: pointer; color: #1a73e8; padding: 4px 8px; }
+  .top-bar h1 { font-size: 17px; font-weight: 600; flex: 1; text-align: center; color: var(--text); }
+  .nav-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 10px; color: var(--text2); }
+  .back-btn { background: none; border: none; font-size: 14px; cursor: pointer; color: var(--accent); padding: 4px 8px; }
   #profileBar {
-    display: flex; align-items: center; justify-content: center;
-    padding: 8px; background: #fff; border-bottom: 1px solid #e0e0e0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px; background: var(--card); border-bottom: 1px solid var(--border);
   }
   #profileBar button {
-    background: #f0f0f0; border: none; padding: 4px 14px; border-radius: 12px;
-    font-size: 13px; color: #666; cursor: pointer;
+    background: var(--bar-bg); border: none; padding: 4px 14px; border-radius: 12px;
+    font-size: 13px; color: var(--text3); cursor: pointer;
   }
-  #profileBar button:active { background: #e0e0e0; }
+  #profileBar button:active { background: var(--hover); }
+  .dark-toggle {
+    background: var(--bar-bg); border: none; padding: 4px 10px; border-radius: 12px;
+    font-size: 15px; cursor: pointer; line-height: 1;
+  }
+  .dark-toggle:active { background: var(--hover); }
 
-  /* View Toggle */
-  .view-toggle {
-    display: flex; justify-content: center; padding: 10px 20px; background: #fff;
-    border-bottom: 1px solid #e0e0e0;
+  /* Stats banner */
+  .stats-banner {
+    display: flex; justify-content: center; gap: 20px;
+    padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--border);
+    font-size: 12px; color: var(--text3);
   }
-  .view-toggle button {
-    flex: 1; max-width: 120px; padding: 7px 0; border: 1px solid #ddd; background: #f9f9f9;
-    font-size: 13px; cursor: pointer; color: #555;
-  }
-  .view-toggle button:first-child { border-radius: 6px 0 0 6px; }
-  .view-toggle button:last-child { border-radius: 0 6px 6px 0; border-left: none; }
-  .view-toggle button.active { background: #333; color: #fff; border-color: #333; }
+  .stats-banner .stat { display: flex; align-items: center; gap: 4px; }
+  .stats-banner .stat-val { font-weight: 700; font-size: 13px; color: var(--text2); }
+  .streak-fire { color: #FFA726; }
 
   /* Month */
   #monthView { padding: 8px; }
   .weekday-headers { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; padding: 6px 0; }
-  .weekday-headers span { font-size: 11px; color: #999; font-weight: 500; }
+  .weekday-headers span { font-size: 11px; color: var(--text3); font-weight: 500; }
   .month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
   .month-day {
     aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    font-size: 13px; border-radius: 8px; cursor: pointer; gap: 1px;
+    font-size: 13px; border-radius: 8px; cursor: pointer; gap: 1px; color: var(--text);
+    position: relative;
   }
-  .month-day:active { background: #e8e8e8; }
-  .month-day.other-month { color: #ccc; }
-  .month-day.other-month svg circle:last-child { opacity: 0.4; }
-  .month-day.today .day-num { font-weight: 700; color: #1a73e8; }
+  .month-day:active { background: var(--hover); }
+  .month-day.other-month { color: var(--text3); opacity: 0.5; }
+  .month-day.today .day-num { font-weight: 700; color: var(--accent); }
+  .month-day .wafaa-check { font-size: 10px; color: #66BB6A; line-height: 1; }
+  .month-day .long-press-hint {
+    position: absolute; inset: 0; border-radius: 8px;
+    background: rgba(102, 187, 106, 0.15); pointer-events: none; opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .month-day.lp-active .long-press-hint { opacity: 1; }
 
-  /* Week */
-  #weekView { padding: 12px; }
-  .week-day {
-    display: flex; align-items: center; padding: 14px; margin-bottom: 6px;
-    background: #fff; border-radius: 10px; cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04); gap: 12px;
+  /* Today button */
+  .today-btn {
+    background: none; border: none; font-size: 11px; cursor: pointer;
+    color: var(--accent); padding: 2px 6px; font-weight: 600;
   }
-  .week-day:active { background: #f0f0f0; }
-  .week-day .day-info { flex: 1; }
-  .week-day .day-name { font-size: 12px; color: #999; }
-  .week-day .day-date { font-size: 15px; font-weight: 500; margin-top: 2px; }
-  .week-day .day-date.today { color: #1a73e8; font-weight: 700; }
-  .week-day .progress-wrap { display: flex; align-items: center; gap: 8px; }
-  .week-day .progress-bar { width: 60px; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
-  .week-day .progress-fill { height: 100%; border-radius: 3px; }
-  .week-day .progress-label { font-size: 12px; color: #999; min-width: 28px; text-align: center; }
+
+  /* Slide transitions */
+  .view-container { position: relative; overflow: hidden; }
+  #monthView, #dayView {
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .slide-out-left { transform: translateX(-100%); opacity: 0; }
+  .slide-in-right { transform: translateX(100%); opacity: 0; }
+  .slide-out-right { transform: translateX(100%); opacity: 0; }
+  .slide-in-left { transform: translateX(-100%); opacity: 0; }
 
   /* Day */
-  #dayView { padding: 16px; }
+  #dayView { padding: 16px; touch-action: pan-y; }
   .item-row {
     display: flex; align-items: center; padding: 14px 16px; margin-bottom: 6px;
-    background: #fff; border-radius: 10px; cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    background: var(--card); border-radius: 10px; cursor: pointer;
+    box-shadow: 0 1px 2px var(--shadow);
+    transition: transform 0.15s ease;
   }
-  .item-row:active { background: #f0f0f0; }
+  .item-row:active { background: var(--hover); transform: scale(0.98); }
   .item-row .item-label { flex: 1; font-size: 16px; direction: rtl; text-align: right; }
   .item-row .item-check {
     width: 28px; height: 28px; border-radius: 6px; display: flex;
     align-items: center; justify-content: center; font-size: 18px;
     border: 2px solid #ddd; margin-left: 12px; flex-shrink: 0;
+    transition: all 0.2s ease;
   }
-  .item-row .item-check.checked { background: #d4edda; border-color: #66BB6A; color: #66BB6A; }
+  .item-row .item-check.checked { background: var(--check-bg); border-color: var(--check-border); color: var(--check-border); }
   .day-summary {
     display: flex; align-items: center; justify-content: center;
-    gap: 12px; padding: 20px; margin-top: 10px; color: #777; font-size: 15px;
+    gap: 12px; padding: 20px; margin-top: 10px; color: var(--text3); font-size: 15px;
+  }
+
+  /* Day nav arrows */
+  .day-nav { display: flex; justify-content: space-between; padding: 0 4px; margin-top: 12px; }
+  .day-nav button {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 16px; font-size: 13px; color: var(--text2); cursor: pointer;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .day-nav button:active { background: var(--hover); }
+
+  /* Swipe hint */
+  .swipe-hint {
+    text-align: center; font-size: 11px; color: var(--text3); padding: 4px; margin-top: 4px;
+    opacity: 0.6;
   }
 </style>
 </head>
@@ -117,7 +164,10 @@
 </div>
 
 <div id="app">
-  <div id="profileBar"><button id="profileSwitch"></button></div>
+  <div id="profileBar">
+    <button id="profileSwitch"></button>
+    <button class="dark-toggle" id="darkToggle">🌙</button>
+  </div>
 
   <div class="top-bar" id="navBar">
     <button class="nav-btn" id="prevBtn">&#8249;</button>
@@ -131,14 +181,12 @@
     <div style="width:50px"></div>
   </div>
 
-  <div class="view-toggle" id="viewToggle">
-    <button id="monthToggle" class="active">Month</button>
-    <button id="weekToggle">Week</button>
-  </div>
+  <div id="statsBanner" class="stats-banner" style="display:none"></div>
 
-  <div id="monthView"></div>
-  <div id="weekView" style="display:none"></div>
-  <div id="dayView" style="display:none"></div>
+  <div class="view-container">
+    <div id="monthView"></div>
+    <div id="dayView" style="display:none"></div>
+  </div>
 </div>
 
 <script>
@@ -158,8 +206,7 @@ const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 let data = {};
-let view = 'month'; // 'month' | 'week' | 'day'
-let previousView = 'week';
+let view = 'month';
 let currentDate = new Date();
 let currentProfile = null;
 let selectedDay = null;
@@ -169,13 +216,16 @@ const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0'
 const isToday = d => dateKey(d) === dateKey(new Date());
 const isFriday = d => d.getDay() === 5;
 
+function haptic() {
+  if (navigator.vibrate) navigator.vibrate(10);
+}
+
 function itemsForDate(d) {
-  let items = ITEMS.filter(i => {
+  return ITEMS.filter(i => {
     if (i.id === 'kahf' && !isFriday(d)) return false;
     if (i.profile && i.profile !== currentProfile) return false;
     return true;
   });
-  return items;
 }
 
 function progressForDate(d) {
@@ -187,7 +237,7 @@ function progressForDate(d) {
 }
 
 function progressColor(done, total) {
-  if (total === 0 || done === 0) return '#ddd';
+  if (total === 0 || done === 0) return 'var(--ring-bg)';
   const pct = done / total;
   if (pct < 0.5) return '#FFA726';
   if (pct < 1) return '#42A5F5';
@@ -199,10 +249,54 @@ function progressRing(done, total, size) {
   const pct = total === 0 ? 0 : done / total;
   const color = progressColor(done, total);
   return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#eee" stroke-width="2"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--ring-bg)" stroke-width="2"/>
     <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="2"
       stroke-dasharray="${c * pct} ${c}" transform="rotate(-90 ${size/2} ${size/2})" stroke-linecap="round"/>
   </svg>`;
+}
+
+// --- Streak ---
+function calcStreak() {
+  let streak = 0;
+  const d = new Date();
+  // Check today first — if not complete, start from yesterday
+  let { done, total } = progressForDate(d);
+  if (done < total) d.setDate(d.getDate() - 1);
+  while (true) {
+    const { done, total } = progressForDate(d);
+    if (total === 0 || done < total) break;
+    streak++;
+    d.setDate(d.getDate() - 1);
+  }
+  return streak;
+}
+
+function calcWeekStats() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  let completeDays = 0, totalDays = 0;
+  for (let i = 0; i <= dayOfWeek; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (dayOfWeek - i));
+    const { done, total } = progressForDate(d);
+    if (total > 0) {
+      totalDays++;
+      if (done === total) completeDays++;
+    }
+  }
+  return { completeDays, totalDays };
+}
+
+function renderStats() {
+  const streak = calcStreak();
+  const week = calcWeekStats();
+  const banner = $('statsBanner');
+  banner.style.display = view === 'month' ? '' : 'none';
+  if (view !== 'month') return;
+  banner.innerHTML = `
+    <div class="stat"><span class="streak-fire">🔥</span> <span class="stat-val">${streak}</span> day streak</div>
+    <div class="stat">This week: <span class="stat-val">${week.completeDays}/${week.totalDays}</span></div>
+  `;
 }
 
 // --- API ---
@@ -217,12 +311,14 @@ async function save() {
 // --- Profile ---
 function selectProfile(p) {
   currentProfile = p;
+  data = {};
   localStorage.setItem('checklist-profile', p);
   $('profileSwitch').textContent = PROFILES[p] + ' ▾';
   $('cover').style.display = 'none';
   $('app').classList.add('visible');
-  view = 'month';
   currentDate = new Date();
+  selectedDay = new Date();
+  showView('day');
   load();
 }
 
@@ -239,51 +335,99 @@ document.querySelectorAll('.profile-btn').forEach(btn => {
 });
 $('profileSwitch').addEventListener('click', switchProfile);
 
-// --- View Management ---
-function getWeekStart(d) {
-  const dt = new Date(d);
-  dt.setDate(dt.getDate() - dt.getDay());
-  return dt;
+// --- Dark Mode ---
+let darkMode = localStorage.getItem('checklist-dark') || 'auto';
+function applyDark() {
+  document.documentElement.classList.remove('auto-dark', 'force-dark');
+  if (darkMode === 'auto') document.documentElement.classList.add('auto-dark');
+  else if (darkMode === 'on') document.documentElement.classList.add('force-dark');
+  $('darkToggle').textContent = darkMode === 'on' ? '☀️' : darkMode === 'off' ? '🌙' : '🌗';
 }
+$('darkToggle').addEventListener('click', () => {
+  darkMode = darkMode === 'auto' ? 'on' : darkMode === 'on' ? 'off' : 'auto';
+  localStorage.setItem('checklist-dark', darkMode);
+  applyDark();
+});
+applyDark();
 
-function showView(v) {
-  if (view !== 'day' && v !== 'day') previousView = view;
+// --- View Management ---
+let transitioning = false;
+
+function showView(v, direction) {
+  if (transitioning) return;
+  const oldView = view;
   view = v;
 
-  $('monthView').style.display = v === 'month' ? '' : 'none';
-  $('weekView').style.display = v === 'week' ? '' : 'none';
-  $('dayView').style.display = v === 'day' ? '' : 'none';
+  const monthEl = $('monthView');
+  const dayEl = $('dayView');
 
   $('navBar').style.display = v === 'day' ? 'none' : '';
   $('dayBar').style.display = v === 'day' ? '' : 'none';
-  $('viewToggle').style.display = v === 'day' ? 'none' : '';
 
-  $('monthToggle').classList.toggle('active', v === 'month');
-  $('weekToggle').classList.toggle('active', v === 'week');
+  if (direction && oldView !== v) {
+    transitioning = true;
+    const outEl = oldView === 'month' ? monthEl : dayEl;
+    const inEl = v === 'month' ? monthEl : dayEl;
 
-  render();
+    // Render the incoming view first
+    if (v === 'month') renderMonth();
+    else renderDay();
+    renderStats();
+
+    inEl.style.display = '';
+    inEl.classList.add(direction === 'left' ? 'slide-in-right' : 'slide-in-left');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        outEl.classList.add(direction === 'left' ? 'slide-out-left' : 'slide-out-right');
+        inEl.classList.remove('slide-in-right', 'slide-in-left');
+
+        setTimeout(() => {
+          outEl.style.display = 'none';
+          outEl.classList.remove('slide-out-left', 'slide-out-right');
+          transitioning = false;
+        }, 260);
+      });
+    });
+  } else {
+    monthEl.style.display = v === 'month' ? '' : 'none';
+    dayEl.style.display = v === 'day' ? '' : 'none';
+    render();
+  }
 }
 
 function openDay(d) {
-  previousView = view;
   selectedDay = new Date(d);
-  showView('day');
+  showView('day', 'left');
 }
 
 function goBack() {
-  showView(previousView);
+  showView('month', 'right');
 }
 
 function render() {
   if (view === 'month') renderMonth();
-  else if (view === 'week') renderWeek();
   else if (view === 'day') renderDay();
+  renderStats();
 }
 
 // --- Month View ---
 function renderMonth() {
   const year = currentDate.getFullYear(), month = currentDate.getMonth();
-  $('headerTitle').textContent = `${MONTHS[month]} ${year}`;
+  const now = new Date();
+  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+
+  const todayBtn = isCurrentMonth ? '' : `<button class="today-btn" id="todayBtn">Today</button>`;
+  $('headerTitle').innerHTML = `${MONTHS[month]} ${year} ${todayBtn}`;
+
+  if (!isCurrentMonth) {
+    const tb = document.getElementById('todayBtn');
+    if (tb) tb.addEventListener('click', (e) => {
+      e.stopPropagation();
+      currentDate = new Date();
+      render();
+    });
+  }
 
   const first = new Date(year, month, 1);
   const last = new Date(year, month + 1, 0);
@@ -294,8 +438,15 @@ function renderMonth() {
   function addDay(d, extraCls) {
     const { done, total } = progressForDate(d);
     const todayCls = isToday(d) ? ' today' : '';
-    html += `<div class="month-day${todayCls}${extraCls}" data-week="${getWeekStart(d).toISOString()}">
-      <span class="day-num">${d.getDate()}</span>${progressRing(done, total, 18)}
+    const k = dateKey(d);
+    const dayData = data[k] || {};
+    const showWafaa = currentProfile === 'jihad' && dayData['wafaa'];
+    const indicator = showWafaa
+      ? '<span class="wafaa-check">✓</span>'
+      : progressRing(done, total, 18);
+    const lpHint = currentProfile === 'jihad' ? '<div class="long-press-hint"></div>' : '';
+    html += `<div class="month-day${todayCls}${extraCls}" data-date="${d.toISOString()}" data-key="${k}">
+      ${lpHint}<span class="day-num">${d.getDate()}</span>${indicator}
     </div>`;
   }
 
@@ -307,48 +458,46 @@ function renderMonth() {
   html += '</div>';
   $('monthView').innerHTML = html;
 
+  // Click → open day, long-press → toggle wafaa (jihad only)
   $('monthView').querySelectorAll('.month-day').forEach(el => {
-    el.addEventListener('click', () => {
-      currentDate = new Date(el.dataset.week);
-      showView('week');
+    let lpTimer = null;
+    let didLongPress = false;
+
+    function startLP(e) {
+      didLongPress = false;
+      if (currentProfile !== 'jihad') return;
+      lpTimer = setTimeout(() => {
+        didLongPress = true;
+        haptic();
+        const k = el.dataset.key;
+        if (!data[k]) data[k] = {};
+        data[k]['wafaa'] = !data[k]['wafaa'];
+        if (!data[k]['wafaa']) delete data[k]['wafaa'];
+        if (Object.keys(data[k]).length === 0) delete data[k];
+        save();
+        renderMonth();
+        renderStats();
+      }, 500);
+      el.classList.add('lp-active');
+    }
+    function cancelLP() {
+      clearTimeout(lpTimer);
+      el.classList.remove('lp-active');
+    }
+
+    el.addEventListener('touchstart', startLP, { passive: true });
+    el.addEventListener('touchend', (e) => {
+      cancelLP();
+      if (!didLongPress) openDay(el.dataset.date);
     });
-  });
-}
+    el.addEventListener('touchmove', cancelLP, { passive: true });
+    el.addEventListener('touchcancel', cancelLP);
 
-// --- Week View ---
-function renderWeek() {
-  const ws = getWeekStart(currentDate);
-  const we = new Date(ws);
-  we.setDate(we.getDate() + 6);
-
-  $('headerTitle').textContent = `${MONTHS[ws.getMonth()]} ${ws.getDate()} – ${MONTHS[we.getMonth()]} ${we.getDate()}`;
-
-  let html = '';
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(ws);
-    d.setDate(d.getDate() + i);
-    const { done, total } = progressForDate(d);
-    const color = progressColor(done, total);
-    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-    const todayCls = isToday(d) ? ' today' : '';
-
-    html += `<div class="week-day" data-date="${d.toISOString()}">
-      <div class="day-info">
-        <div class="day-name">${DAYS[d.getDay()]}</div>
-        <div class="day-date${todayCls}">${MONTHS[d.getMonth()]} ${d.getDate()}</div>
-      </div>
-      <div class="progress-wrap">
-        <span class="progress-label">${done}/${total}</span>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${color}"></div></div>
-        ${progressRing(done, total, 24)}
-      </div>
-    </div>`;
-  }
-
-  $('weekView').innerHTML = html;
-
-  $('weekView').querySelectorAll('.week-day').forEach(el => {
-    el.addEventListener('click', () => openDay(el.dataset.date));
+    // Desktop: regular click
+    el.addEventListener('click', (e) => {
+      if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return;
+      openDay(el.dataset.date);
+    });
   });
 }
 
@@ -373,10 +522,18 @@ function renderDay() {
 
   html += `<div class="day-summary">${progressRing(done, total, 36)} <span>${done} / ${total}</span></div>`;
 
+  // Day navigation buttons
+  html += `<div class="day-nav">
+    <button id="prevDay">&#8249; Previous day</button>
+    <button id="nextDay">Next day &#8250;</button>
+  </div>`;
+  html += `<div class="swipe-hint">Swipe left/right to change day</div>`;
+
   $('dayView').innerHTML = html;
 
   $('dayView').querySelectorAll('.item-row').forEach(el => {
     el.addEventListener('click', () => {
+      haptic();
       const itemId = el.dataset.item;
       if (!data[k]) data[k] = {};
       data[k][itemId] = !data[k][itemId];
@@ -386,22 +543,55 @@ function renderDay() {
       renderDay();
     });
   });
+
+  // Day nav buttons
+  document.getElementById('prevDay').addEventListener('click', () => navigateDay(-1));
+  document.getElementById('nextDay').addEventListener('click', () => navigateDay(1));
 }
+
+function navigateDay(offset) {
+  haptic();
+  const d = new Date(selectedDay);
+  d.setDate(d.getDate() + offset);
+  selectedDay = d;
+  renderDay();
+}
+
+// --- Swipe on Day View ---
+let touchStartX = 0;
+let touchStartY = 0;
+let swiping = false;
+
+$('dayView').addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  swiping = true;
+}, { passive: true });
+
+$('dayView').addEventListener('touchmove', (e) => {
+  if (!swiping) return;
+  const dy = Math.abs(e.touches[0].clientY - touchStartY);
+  if (dy > 30) swiping = false; // vertical scroll, cancel swipe
+}, { passive: true });
+
+$('dayView').addEventListener('touchend', (e) => {
+  if (!swiping) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 60) {
+    navigateDay(dx < 0 ? 1 : -1);
+  }
+  swiping = false;
+});
 
 // --- Navigation ---
 $('prevBtn').addEventListener('click', () => {
-  if (view === 'month') currentDate.setMonth(currentDate.getMonth() - 1);
-  else if (view === 'week') currentDate.setDate(currentDate.getDate() - 7);
+  currentDate.setMonth(currentDate.getMonth() - 1);
   render();
 });
 $('nextBtn').addEventListener('click', () => {
-  if (view === 'month') currentDate.setMonth(currentDate.getMonth() + 1);
-  else if (view === 'week') currentDate.setDate(currentDate.getDate() + 7);
+  currentDate.setMonth(currentDate.getMonth() + 1);
   render();
 });
-
-$('monthToggle').addEventListener('click', () => showView('month'));
-$('weekToggle').addEventListener('click', () => showView('week'));
 $('backBtn').addEventListener('click', goBack);
 
 // --- Init ---
