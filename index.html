@@ -44,8 +44,8 @@
   .profile-btn:active { transform: scale(0.97); }
 
   /* App */
-  #app { display: none; }
-  #app.visible { display: block; }
+  #app { display: none; min-height: 100dvh; flex-direction: column; }
+  #app.visible { display: flex; }
 
   /* Header */
   .top-bar {
@@ -93,8 +93,8 @@
   .month-day:active { background: var(--hover); }
   .month-day.other-month { color: var(--text3); opacity: 0.5; }
   .month-day.today .day-num { font-weight: 700; color: var(--accent); }
-  .month-day .ring-wrap { position: relative; display: inline-flex; }
-  .month-day .wafaa-check { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #66BB6A; font-weight: 700; line-height: 1; }
+  .ring-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+  .ring-wrap .wafaa-check { position: absolute; font-size: 9px; color: #66BB6A; font-weight: 700; line-height: 1; }
   .month-day .long-press-hint {
     position: absolute; inset: 0; border-radius: 8px;
     background: rgba(102, 187, 106, 0.15); pointer-events: none; opacity: 0;
@@ -109,7 +109,7 @@
   }
 
   /* Slide transitions */
-  .view-container { position: relative; overflow: hidden; }
+  .view-container { position: relative; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
   #monthView, #dayView {
     transition: transform 0.25s ease, opacity 0.25s ease;
   }
@@ -119,7 +119,8 @@
   .slide-in-left { transform: translateX(-100%); opacity: 0; }
 
   /* Day */
-  #dayView { padding: 16px; touch-action: pan-y; }
+  #dayView { padding: 12px 16px; touch-action: pan-y; display: flex; flex-direction: column; min-height: 0; }
+  #dayView.visible-flex { display: flex; }
   .item-row {
     display: flex; align-items: center; padding: 14px 16px; margin-bottom: 6px;
     background: var(--card); border-radius: 10px; cursor: pointer;
@@ -137,11 +138,11 @@
   .item-row .item-check.checked { background: var(--check-bg); border-color: var(--check-border); color: #fff; font-weight: 700; }
   .day-summary {
     display: flex; align-items: center; justify-content: center;
-    gap: 12px; padding: 20px; margin-top: 10px; color: var(--text3); font-size: 15px;
+    gap: 12px; padding: 12px; margin-top: auto; color: var(--text3); font-size: 15px;
   }
 
   /* Day nav arrows */
-  .day-nav { display: flex; justify-content: space-between; padding: 0 4px; margin-top: 12px; }
+  .day-nav { display: flex; justify-content: space-between; padding: 0 4px; margin-top: 8px; }
   .day-nav button {
     background: var(--card); border: 1px solid var(--border); border-radius: 8px;
     padding: 8px 16px; font-size: 13px; color: var(--text2); cursor: pointer;
@@ -521,7 +522,7 @@ function renderDay() {
   });
 
   const wafaaDone = currentProfile === 'jihad' && dayData['wafaa'];
-  const summaryRing = `<span class="ring-wrap">${progressRing(done, total, 36)}${wafaaDone ? '<span class="wafaa-check" style="font-size:14px">✓</span>' : ''}</span>`;
+  const summaryRing = `<span class="ring-wrap">${progressRing(done, total, 36)}${wafaaDone ? '<span class="wafaa-check" style="font-size:16px">✓</span>' : ''}</span>`;
   html += `<div class="day-summary">${summaryRing} <span>${done} / ${total}</span></div>`;
 
   // Day navigation buttons
