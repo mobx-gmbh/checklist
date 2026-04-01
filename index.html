@@ -59,11 +59,20 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 8px 12px; background: var(--card); border-bottom: 1px solid var(--border);
   }
-  #profileBar button {
-    background: var(--bar-bg); border: none; padding: 4px 14px; border-radius: 12px;
-    font-size: 13px; color: var(--text3); cursor: pointer;
+  .profile-toggle {
+    display: flex; border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
   }
-  #profileBar button:active { background: var(--hover); }
+  .profile-toggle button {
+    border: none; padding: 5px 16px; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s ease;
+    background: var(--bar-bg); color: var(--text3);
+  }
+  .profile-toggle button + button { border-left: 1px solid var(--border); }
+  .profile-toggle button.active {
+    background: var(--accent); color: #fff; font-weight: 600;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .profile-toggle button:not(.active):active { background: var(--hover); }
   .dark-toggle {
     background: var(--bar-bg); border: none; padding: 4px 10px; border-radius: 12px;
     font-size: 15px; cursor: pointer; line-height: 1;
@@ -171,7 +180,10 @@
 
 <div id="app">
   <div id="profileBar">
-    <button id="profileSwitch"></button>
+    <div class="profile-toggle">
+      <button class="profile-radio" data-profile="khawla">خولة</button>
+      <button class="profile-radio" data-profile="jihad">جهاد</button>
+    </div>
     <button class="dark-toggle" id="darkToggle">🌙</button>
   </div>
 
@@ -273,11 +285,17 @@ async function save() {
 }
 
 // --- Profile ---
+function updateProfileButtons() {
+  document.querySelectorAll('.profile-radio').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.profile === currentProfile);
+  });
+}
+
 function selectProfile(p) {
   currentProfile = p;
   data = {};
   localStorage.setItem('checklist-profile', p);
-  $('profileSwitch').textContent = PROFILES[p] + ' ▾';
+  updateProfileButtons();
   $('cover').style.display = 'none';
   $('app').classList.add('visible');
   currentDate = new Date();
@@ -286,18 +304,16 @@ function selectProfile(p) {
   load();
 }
 
-function switchProfile() {
-  currentProfile = null;
-  data = {};
-  localStorage.removeItem('checklist-profile');
-  $('app').classList.remove('visible');
-  $('cover').style.display = '';
-}
-
 document.querySelectorAll('.profile-btn').forEach(btn => {
   btn.addEventListener('click', () => selectProfile(btn.dataset.profile));
 });
-$('profileSwitch').addEventListener('click', switchProfile);
+document.querySelectorAll('.profile-radio').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.profile !== currentProfile) {
+      selectProfile(btn.dataset.profile);
+    }
+  });
+});
 
 // --- Dark Mode ---
 let darkMode = localStorage.getItem('checklist-dark') || 'auto';
@@ -316,9 +332,12 @@ applyDark();
 
 // --- View Management ---
 let transitioning = false;
+let dayTransitioning = false;
 
 function showView(v, direction) {
-  if (transitioning) return;
+  if (transitioning && direction) return;
+  transitioning = false;
+  dayTransitioning = false;
   const oldView = view;
   view = v;
 
@@ -329,6 +348,17 @@ function showView(v, direction) {
   $('dayBar').style.display = v === 'day' ? '' : 'none';
 
   const container = document.querySelector('.view-container');
+
+  // Reset any leftover inline styles from interrupted animations
+  dayEl.style.transition = '';
+  dayEl.style.transform = '';
+  dayEl.style.opacity = '';
+  monthEl.style.transition = '';
+  monthEl.style.transform = '';
+  monthEl.style.opacity = '';
+  container.classList.remove('animating');
+  monthEl.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+  dayEl.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
 
   if (direction && oldView !== v) {
     transitioning = true;
@@ -514,7 +544,6 @@ function renderDay() {
   document.getElementById('nextDay').addEventListener('click', () => navigateDay(1));
 }
 
-let dayTransitioning = false;
 function navigateDay(offset) {
   if (dayTransitioning) return;
   dayTransitioning = true;
